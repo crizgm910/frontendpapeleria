@@ -1,0 +1,179 @@
+<Window x:Class="PapeleriaDB.Views.SeleccionarObjetoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{Binding Titulo}" Height="650" Width="950"
+        WindowStartupLocation="CenterOwner"
+        FontFamily="Segoe UI, Inter, Roboto, Arial, sans-serif"
+        Background="#F9FAFB">
+  <Window.Resources>
+    <!-- Colors -->
+    <SolidColorBrush x:Key="BrandBlue" Color="#2563EB" />
+    <SolidColorBrush x:Key="TextPrimary" Color="#111827" />
+    <SolidColorBrush x:Key="TextSecondary" Color="#6B7280" />
+    <SolidColorBrush x:Key="TextMuted" Color="#9CA3AF" />
+    <SolidColorBrush x:Key="BorderColor" Color="#E5E7EB" />
+    <SolidColorBrush x:Key="BgLight" Color="#F9FAFB" />
+    <SolidColorBrush x:Key="SuccessButton" Color="#10B981" />
+
+    <!-- Button Styles -->
+    <Style x:Key="OutlinedButton" TargetType="Button">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="16,8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="SolidGreenButton" TargetType="Button">
+      <Setter Property="Background" Value="{StaticResource SuccessButton}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="16,8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <!-- Clean DataGrid -->
+    <Style x:Key="CleanDataGrid" TargetType="DataGrid">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="GridLinesVisibility" Value="None" />
+      <Setter Property="HeadersVisibility" Value="Column" />
+      <Setter Property="RowBackground" Value="White" />
+      <Setter Property="AlternatingRowBackground" Value="White" />
+      <Setter Property="AutoGenerateColumns" Value="False" />
+      <Setter Property="CanUserAddRows" Value="False" />
+      <Setter Property="IsReadOnly" Value="True" />
+    </Style>
+    <Style x:Key="CleanDataGridColumnHeader" TargetType="DataGridColumnHeader">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Padding" Value="16,12" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+    </Style>
+    <Style x:Key="CleanDataGridRow" TargetType="DataGridRow">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+      <Setter Property="MinHeight" Value="48" />
+      <Style.Triggers>
+        <Trigger Property="IsSelected" Value="True">
+          <Setter Property="Background" Value="#EFF6FF" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="CleanDataGridCell" TargetType="DataGridCell">
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="16,0" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="DataGridCell">
+            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+              <ContentPresenter VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+  </Window.Resources>
+  
+  <Grid Margin="32">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- Header -->
+    <StackPanel Grid.Row="0" Margin="0,0,0,24">
+      <TextBlock Text="{Binding Titulo}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4" />
+      <TextBlock Text="{Binding Descripcion}" FontSize="15" Foreground="{StaticResource TextSecondary}" />
+    </StackPanel>
+
+    <!-- Search Box -->
+    <TextBox Grid.Row="1" Tag="Buscar por nombre, SKU o categor&#237;a..." Text="{Binding Busqueda, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,24" />
+
+    <!-- DataGrid -->
+    <DataGrid Grid.Row="2" ItemsSource="{Binding ItemsDisponibles}" SelectedItem="{Binding ItemSeleccionado}" Style="{StaticResource CleanDataGrid}" ColumnHeaderStyle="{StaticResource CleanDataGridColumnHeader}" RowStyle="{StaticResource CleanDataGridRow}" CellStyle="{StaticResource CleanDataGridCell}">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="SKU" Binding="{Binding CodigoIdentificador}" Width="1.2*">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+              <Setter Property="FontFamily" Value="Consolas, Courier New, monospace" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="NOMBRE/DESCRIPCI&#211;N" Binding="{Binding Nombre}" Width="3*">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+              <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="CATEGOR&#205;A" Binding="{Binding Categoria}" Width="1.5*">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="PRECIO UNIT." Binding="{Binding PrecioReal, StringFormat=\{0:C\}}" Width="1*">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="Foreground" Value="{StaticResource BrandBlue}" />
+              <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="EXIST." Binding="{Binding ExistenciasReales}" Width="1*">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <!-- Footer Buttons -->
+    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
+      <Button Style="{StaticResource OutlinedButton}" Margin="0,0,16,0" Click="CloseButton_Click">
+        <TextBlock Text="Cancelar" FontSize="14" />
+      </Button>
+      <Button Style="{StaticResource SolidGreenButton}" Click="ConfirmButton_Click">
+        <TextBlock Text="Confirmar Selecci&#243;n" FontSize="14" />
+      </Button>
+    </StackPanel>
+  </Grid>
+</Window>
