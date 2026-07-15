@@ -242,7 +242,7 @@
         <!-- DataGrid -->
         <DataGrid Grid.Row="1" ItemsSource="{Binding ListaServicios}" Style="{StaticResource CleanDataGrid}" ColumnHeaderStyle="{StaticResource CleanDataGridColumnHeader}" Margin="24,0,24,24">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="C&#211;DIGO / SKU" Binding="{Binding Sku}" Width="1*">
+            <DataGridTextColumn Header="C&#211;DIGO / SKU" Binding="{Binding CodigoInterno}" Width="1*">
               <DataGridTextColumn.ElementStyle>
                 <Style TargetType="TextBlock">
                   <Setter Property="Foreground" Value="{StaticResource BrandBlue}" />
@@ -269,7 +269,7 @@
               </DataGridTextColumn.ElementStyle>
             </DataGridTextColumn>
 
-            <DataGridTextColumn Header="PRECIO BASE" Binding="{Binding Precio, StringFormat='{}{0:C}'}" Width="1*">
+            <DataGridTextColumn Header="PRECIO BASE" Binding="{Binding PrecioBase, StringFormat='{}{0:C}'}" Width="1*">
               <DataGridTextColumn.ElementStyle>
                 <Style TargetType="TextBlock">
                   <Setter Property="Foreground" Value="{StaticResource SuccessText}" />

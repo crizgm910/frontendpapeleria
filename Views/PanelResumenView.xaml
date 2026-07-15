@@ -119,7 +119,11 @@
     <StackPanel Margin="32">
       <!-- Header -->
       <TextBlock Text="Panel / Resumen" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4" />
-      <TextBlock Text="Resumen operativo del d&#237;a - Papeler&#237;a DB." FontSize="15" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,32" />
+      <Grid Margin="0,0,0,32">
+        <TextBlock Text="Resumen operativo real del día - Papelería DB." FontSize="15" Foreground="{StaticResource TextSecondary}" />
+        <Button Content="Actualizar" Command="{Binding LoadDataCommand}" HorizontalAlignment="Right" Padding="18,8" />
+      </Grid>
+      <TextBlock Text="{Binding Mensaje}" Foreground="#B45309" Margin="0,-20,0,20" TextWrapping="Wrap" />
       <!-- 4 Summary Cards -->
       <UniformGrid Columns="4" Margin="0,0,0,24">
         <!-- Card 1 -->
@@ -134,8 +138,8 @@
             </Border>
             <StackPanel Grid.Column="1">
               <TextBlock Text="VENTAS DEL DÍA" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
-              <TextBlock Text="$4,870.00" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
-              <TextBlock Text="&#x2191; +8% vs ayer" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource SuccessText}" />
+              <TextBlock Text="{Binding VentasDelDia, StringFormat={}{0:C2}}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
+              <TextBlock Text="{Binding TotalVentasHoy, StringFormat={}{0} venta(s) registrada(s)}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource SuccessText}" />
             </StackPanel>
           </Grid>
         </Border>
@@ -151,8 +155,8 @@
             </Border>
             <StackPanel Grid.Column="1">
               <TextBlock Text="CAJA ACTIVA / CORTE" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
-              <TextBlock Text="$2,340.00" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
-              <TextBlock Text="Último corte: 13:00" FontSize="13" Foreground="{StaticResource TextMuted}" />
+              <TextBlock Text="{Binding EfectivoEsperado, StringFormat={}{0:C2}}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
+              <TextBlock Text="{Binding EstadoCaja}" FontSize="13" Foreground="{StaticResource TextMuted}" />
             </StackPanel>
           </Grid>
         </Border>
@@ -168,8 +172,8 @@
             </Border>
             <StackPanel Grid.Column="1">
               <TextBlock Text="SERVICIOS HOY" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
-              <TextBlock Text="127" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
-              <TextBlock Text="Imp./Cop./Engarg." FontSize="13" Foreground="{StaticResource TextMuted}" />
+              <TextBlock Text="{Binding ServiciosHoy}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
+              <TextBlock Text="Servicios incluidos en ventas" FontSize="13" Foreground="{StaticResource TextMuted}" />
             </StackPanel>
           </Grid>
         </Border>
@@ -185,7 +189,7 @@
             </Border>
             <StackPanel Grid.Column="1">
               <TextBlock Text="ALERTAS BAJO STOCK" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
-              <TextBlock Text="14" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
+              <TextBlock Text="{Binding AlertasStock}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
               <TextBlock Text="&#x2192; Ver productos" FontSize="13" FontWeight="SemiBold" Foreground="#EF4444" />
             </StackPanel>
           </Grid>

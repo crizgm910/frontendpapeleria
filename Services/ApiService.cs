@@ -10,26 +10,23 @@ namespace PapeleriaDB.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private string _jwtToken;
+        private string? _jwtToken;
 
         public ApiService()
         {
-            var handler = new HttpClientHandler
+            var configuredUrl = Environment.GetEnvironmentVariable("PAPELERIA_API_URL")
+                ?? "https://papeleria-db-api.onrender.com/";
+            if (!configuredUrl.EndsWith('/')) configuredUrl += "/";
+
+            _httpClient = new HttpClient
             {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true // Bypass SSL validation for local dev
-            };
-            
-            _httpClient = new HttpClient(handler)
-            {
-                // The API listens on HTTPS 7001 by default, or HTTP 5000. 
-                // We'll set the BaseAddress based on what we usually see in launchSettings.json,
-                // but let's default to HTTPS 5001 or 7001. We will find out when we run it.
-                // Let's use http://localhost:5000 for now. We can adjust this.
-                BaseAddress = new Uri("http://localhost:5139/")
+                BaseAddress = new Uri(configuredUrl),
+                // Render puede tardar cerca de un minuto en reactivar una instancia gratuita.
+                Timeout = TimeSpan.FromSeconds(120)
             };
         }
 
-        public void SetToken(string token)
+        public void SetToken(string? token)
         {
             _jwtToken = token;
             if (!string.IsNullOrEmpty(token))
@@ -42,13 +39,14 @@ namespace PapeleriaDB.Services
             }
         }
 
-        public string GetToken() => _jwtToken;
+        public string? GetToken() => _jwtToken;
 
         public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _httpClient.GetAsync(endpoint);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?? throw new JsonException("La API devolvió una respuesta vacía.");
         }
 
         public async Task<TResponse> PostAsync<TRequest, TResponse>(string endpoint, TRequest data)
@@ -62,14 +60,16 @@ namespace PapeleriaDB.Services
                 throw new HttpRequestException($"API request failed: {response.StatusCode}. Content: {errorContent}");
             }
             
-            return await response.Content.ReadFromJsonAsync<TResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return await response.Content.ReadFromJsonAsync<TResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?? throw new JsonException("La API devolvió una respuesta vacía.");
         }
         
         public async Task<TResponse> PutAsync<TRequest, TResponse>(string endpoint, TRequest data)
         {
             var response = await _httpClient.PutAsJsonAsync(endpoint, data);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return await response.Content.ReadFromJsonAsync<TResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?? throw new JsonException("La API devolvió una respuesta vacía.");
         }
 
         public async Task DeleteAsync(string endpoint)

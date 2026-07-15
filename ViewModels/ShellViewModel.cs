@@ -59,6 +59,12 @@ namespace PapeleriaDB.ViewModels
                 case "Configuracion":
                     CurrentPage = App.Current.Services.GetRequiredService<ConfiguracionViewModel>();
                     break;
+                case "CorteCaja":
+                    CurrentPage = App.Current.Services.GetRequiredService<CorteCajaViewModel>();
+                    break;
+                case "MovimientosCaja":
+                    CurrentPage = App.Current.Services.GetRequiredService<MovimientosCajaViewModel>();
+                    break;
             }
         }
     }

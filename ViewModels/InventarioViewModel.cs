@@ -8,7 +8,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PapeleriaDB.Models;
 using PapeleriaDB.Services;
-using PapeleriaDB.Application.DTOs;
 
 namespace PapeleriaDB.ViewModels
 {
@@ -79,24 +78,23 @@ namespace PapeleriaDB.ViewModels
             IsLoading = true;
             try
             {
-                var productos = await _apiService.GetAsync<System.Collections.Generic.IEnumerable<ProductoDto>>("api/productos");
+                var productosTask = _apiService.GetAsync<System.Collections.Generic.IEnumerable<ProductoDto>>("api/productos");
+                var categoriasTask = _apiService.GetAsync<System.Collections.Generic.IEnumerable<CategoriaDto>>("api/categorias");
+                await Task.WhenAll(productosTask, categoriasTask);
+
+                var productos = await productosTask;
+                var categorias = (await categoriasTask).ToDictionary(c => c.Id, c => c.Nombre);
                 
                 Articulos.Clear();
                 foreach (var p in productos)
                 {
                     string estado = p.StockActual > 10 ? "Activo" : (p.StockActual > 0 ? "Bajo stock" : "Sin stock");
                     
-                    // We assign a pseudo category just for testing the filters since the API doesn't return one yet.
-                    string pseudoCategoria = "Papelería";
-                    if (p.Nombre.Contains("Silla", StringComparison.OrdinalIgnoreCase) || p.Nombre.Contains("Escritorio", StringComparison.OrdinalIgnoreCase)) pseudoCategoria = "Oficina";
-                    else if (p.Nombre.Contains("Regalo", StringComparison.OrdinalIgnoreCase) || p.Nombre.Contains("Taza", StringComparison.OrdinalIgnoreCase)) pseudoCategoria = "Regalos";
-                    else if (p.Nombre.Contains("Impresión", StringComparison.OrdinalIgnoreCase) || p.Nombre.Contains("Copia", StringComparison.OrdinalIgnoreCase)) pseudoCategoria = "Servicios";
-
                     Articulos.Add(new Articulo 
                     { 
                         Nombre = p.Nombre, 
-                        Sku = p.CodigoBarras, 
-                        Categoria = pseudoCategoria, 
+                        Sku = !string.IsNullOrWhiteSpace(p.CodigoInterno) ? p.CodigoInterno : p.CodigoBarras,
+                        Categoria = categorias.TryGetValue(p.CategoriaId, out var categoria) ? categoria : "Sin categoría",
                         Precio = p.PrecioVenta, 
                         Stock = p.StockActual, 
                         Estado = estado 

@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PapeleriaDB.Models;
 using PapeleriaDB.Services;
-using PapeleriaDB.Application.DTOs;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
@@ -15,6 +14,7 @@ namespace PapeleriaDB.ViewModels
     public partial class NuevaVentaViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+        private readonly ApplicationSession _session;
 
         public ObservableCollection<DetalleVentaViewModel> DetallesVenta { get; } = new();
 
@@ -48,9 +48,10 @@ namespace PapeleriaDB.ViewModels
         [ObservableProperty]
         private bool _isProcessing;
 
-        public NuevaVentaViewModel(ApiService apiService)
+        public NuevaVentaViewModel(ApiService apiService, ApplicationSession session)
         {
             _apiService = apiService;
+            _session = session;
             DetallesVenta.CollectionChanged += DetallesVenta_CollectionChanged;
         }
 
@@ -85,8 +86,8 @@ namespace PapeleriaDB.ViewModels
         {
             Subtotal = DetallesVenta.Sum(i => i.Subtotal);
             Descuento = 0m; // Default to 0 for now
-            Iva = (Subtotal - Descuento) * 0.16m;
-            Total = Subtotal - Descuento + Iva;
+            Iva = 0m;
+            Total = System.Math.Max(0m, Subtotal - Descuento);
         }
 
         [RelayCommand]
@@ -104,21 +105,39 @@ namespace PapeleriaDB.ViewModels
                 return;
             }
 
+            if (_session.UsuarioId <= 0 || _session.CajaId <= 0)
+            {
+                MessageBox.Show(
+                    $"La computadora '{_session.TerminalId}' no tiene una caja asignada. Selecciónala en Configuración.",
+                    "Configuración de caja",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             IsProcessing = true;
             try
             {
+                var cajas = await _apiService.GetAsync<CajaDto[]>("api/cajas");
+                var cajaAsignada = cajas.FirstOrDefault(c => c.Id == _session.CajaId);
+                if (cajaAsignada is null)
+                {
+                    MessageBox.Show("La caja asignada ya no existe. Selecciona otra en Configuración.", "Caja no disponible", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!cajaAsignada.EstaAbierta)
+                {
+                    MessageBox.Show($"{cajaAsignada.Nombre} está cerrada. Ábrela desde Configuración antes de vender.", "Caja cerrada", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 var dto = new CrearVentaDto
                 {
-                    CajaId = 1,
-                    UsuarioId = 1,
+                    CajaId = _session.CajaId,
+                    UsuarioId = _session.UsuarioId,
                     MetodoPagoPrincipal = MetodoPagoPrincipal,
-                    Descuento = this.Descuento,
-                    Cliente = string.IsNullOrWhiteSpace(ClienteBusqueda) ? "Público General" : ClienteBusqueda,
-                    Telefono = this.Telefono,
-                    Subtotal = this.Subtotal,
-                    Iva = this.Iva,
-                    Total = this.Total,
-                    MontoRecibido = this.Total
+                    Descuento = this.Descuento
                 };
 
                 foreach (var item in DetallesVenta)
@@ -127,11 +146,7 @@ namespace PapeleriaDB.ViewModels
                     {
                         ProductoId = item.IsServicio ? null : item.Id,
                         ServicioId = item.IsServicio ? item.Id : null,
-                        Cantidad = item.Cantidad,
-                        Sku = item.Sku,
-                        Nombre = item.Nombre,
-                        Precio = item.PrecioUnitario,
-                        Subtotal = item.Subtotal
+                        Cantidad = item.Cantidad
                     });
                 }
 
@@ -194,7 +209,7 @@ namespace PapeleriaDB.ViewModels
         private void AgregarArticuloALaVenta(ObjetoInventarioDto item, bool esServicio)
         {
             // Check if item is already in list
-            var existente = DetallesVenta.FirstOrDefault(d => d.Sku == item.Sku);
+            var existente = DetallesVenta.FirstOrDefault(d => d.Sku == item.CodigoIdentificador && d.IsServicio == esServicio);
             if (existente != null)
             {
                 existente.Cantidad++;

@@ -41,5 +41,21 @@ namespace PapeleriaDB.Properties
                 this["UsuarioGuardado"] = value;
             }
         }
+
+        [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("0")]
+        public int CajaId
+        {
+            get { return ((int)(this["CajaId"])); }
+            set { this["CajaId"] = value; }
+        }
+
+        [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("")]
+        public string TerminalId
+        {
+            get { return ((string)(this["TerminalId"])); }
+            set { this["TerminalId"] = value; }
+        }
     }
 }

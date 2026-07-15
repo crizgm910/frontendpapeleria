@@ -1,5 +1,7 @@
 using System.Windows.Controls;
 using PapeleriaDB.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace PapeleriaDB.Views
 {
@@ -8,7 +10,13 @@ namespace PapeleriaDB.Views
         public HistorialLogsView()
         {
             InitializeComponent();
-            DataContext = new HistorialLogsViewModel();
+            DataContext = App.Current.Services.GetRequiredService<HistorialLogsViewModel>();
+            Loaded += HistorialLogsView_Loaded;
+        }
+
+        private async void HistorialLogsView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is HistorialLogsViewModel viewModel) await viewModel.LoadAsync();
         }
     }
 }

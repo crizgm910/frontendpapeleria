@@ -28,6 +28,7 @@ public partial class App : System.Windows.Application
 
         // Services
         services.AddSingleton<ApiService>();
+        services.AddSingleton<ApplicationSession>();
         services.AddSingleton<AuthClientService>();
 
         // ViewModels
@@ -41,6 +42,8 @@ public partial class App : System.Windows.Application
         services.AddTransient<ConfiguracionViewModel>();
         services.AddSingleton<ServiciosViewModel>(); // Registro correcto: Una única instancia compartida globalmente
         services.AddTransient<HistorialLogsViewModel>();
+        services.AddTransient<CorteCajaViewModel>();
+        services.AddTransient<MovimientosCajaViewModel>();
 
         return services.BuildServiceProvider();
     }

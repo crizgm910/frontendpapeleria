@@ -78,7 +78,7 @@
         
         <StackPanel Grid.Column="0">
           <TextBlock Text="C&#243;digo / SKU" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
-          <TextBox Tag="Ej. SRV-ENG-01" Text="{Binding Sku, UpdateSourceTrigger=PropertyChanged}" />
+          <TextBox Tag="Ej. SRV-ENG-01" Text="{Binding CodigoInterno, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel Grid.Column="2">

@@ -45,6 +45,12 @@
         <DataTemplate DataType="{x:Type viewmodels:ConfiguracionViewModel}">
             <views:ConfiguracionView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:CorteCajaViewModel}">
+            <views:CorteCajaView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:MovimientosCajaViewModel}">
+            <views:MovimientosCajaView />
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>

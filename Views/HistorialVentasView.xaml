@@ -208,6 +208,7 @@
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <TextBlock Text="Ventas / POS" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4" />
           <TextBlock Text="Historial de ventas y servicios registrados." FontSize="15" Foreground="{StaticResource TextSecondary}" />
+          <TextBlock Text="{Binding Mensaje}" FontSize="12" Foreground="#B45309" Margin="0,4,0,0" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
           <Button Command="{Binding AlternarFiltrosVentasCommand}" Style="{StaticResource OutlinedButton}" Margin="0,0,16,0" Cursor="Hand">
@@ -248,7 +249,7 @@
                   </Style>
                 </DataGridTextColumn.ElementStyle>
               </DataGridTextColumn>
-              <DataGridTextColumn Header="CLIENTE" Binding="{Binding Cliente}" Width="2*">
+              <DataGridTextColumn Header="M&#201;TODO" Binding="{Binding MetodoPago}" Width="2*">
                 <DataGridTextColumn.ElementStyle>
                   <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
@@ -283,10 +284,7 @@
               <DataGridTemplateColumn Header="ACCIONES" Width="1*">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                      <TextBlock Text="&#x2026;" Foreground="{StaticResource TextMuted}" FontSize="16" FontWeight="Bold" Margin="0,0,12,0" Cursor="Hand" />
-                      <TextBlock Text="&#x1F441;" Foreground="{StaticResource TextMuted}" FontSize="16" Cursor="Hand" />
-                    </StackPanel>
+                    <Button Content="Devolver" Command="{Binding DataContext.AbrirDevolucionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Padding="10,5" Foreground="#7E22CE" />
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>

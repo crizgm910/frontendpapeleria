@@ -15,7 +15,7 @@ namespace PapeleriaDB.ViewModels
         private string _nombre = string.Empty;
 
         [ObservableProperty]
-        private string _sku = string.Empty;
+        private string _codigoInterno = string.Empty;
 
         [ObservableProperty]
         private decimal _precio;
@@ -43,15 +43,15 @@ namespace PapeleriaDB.ViewModels
             IsProcessing = true;
             try
             {
-                var dto = new ServicioDto
+                var dto = new GuardarServicioDto
                 {
                     Nombre = Nombre,
-                    Sku = string.IsNullOrWhiteSpace(Sku) ? "SRV-NUEVO" : Sku,
-                    Precio = Precio,
+                    CodigoInterno = string.IsNullOrWhiteSpace(CodigoInterno) ? null : CodigoInterno,
+                    PrecioBase = Precio,
                     Descripcion = Descripcion
                 };
 
-                var response = await _apiService.PostAsync<ServicioDto, ServicioDto>("api/servicios", dto);
+                var response = await _apiService.PostAsync<GuardarServicioDto, ServicioDto>("api/servicios", dto);
                 
                 if (response != null)
                 {

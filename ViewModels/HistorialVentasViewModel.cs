@@ -22,10 +22,14 @@ namespace PapeleriaDB.ViewModels
         [ObservableProperty]
         private int _totalVentas;
 
+        [ObservableProperty]
+        private string _mensaje = string.Empty;
+
         public HistorialVentasViewModel(ApiService apiService)
         {
             _apiService = apiService;
             Ventas = new ObservableCollection<VentaDto>();
+            _ = CargarHistorialVentasAsync();
         }
 
         protected override async void OnActivated()
@@ -52,8 +56,25 @@ namespace PapeleriaDB.ViewModels
             }
             catch (System.Exception ex)
             {
-                // Handle potential 404 or connection issues gracefully for now
-                System.Diagnostics.Debug.WriteLine($"Error fetching ventas: {ex.Message}");
+                Mensaje = $"No se pudo cargar el historial: {ex.Message}";
+            }
+        }
+
+        [RelayCommand]
+        private async Task AbrirDevolucionAsync(VentaDto? venta)
+        {
+            if (venta is null) return;
+            if (venta.Estado == "Cancelada" || !venta.Detalles.Any(d => d.Cantidad > 0))
+            {
+                Mensaje = "Esta venta ya no tiene artículos disponibles para devolver.";
+                return;
+            }
+
+            var modal = new DevolucionWindow(venta) { Owner = System.Windows.Application.Current.MainWindow };
+            if (modal.ShowDialog() == true)
+            {
+                await CargarHistorialVentasAsync();
+                Mensaje = "Historial actualizado después de la devolución.";
             }
         }
 

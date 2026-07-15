@@ -7,5 +7,10 @@ namespace PapeleriaDB.Models
         public string Accion { get; set; } = string.Empty;
         public string Detalle { get; set; } = string.Empty;
         public string Fecha { get; set; } = string.Empty;
+        public string Recurso { get; set; } = string.Empty;
+        public string Metodo { get; set; } = string.Empty;
+
+        public string Detalles => Detalle;
+        public string Tiempo => Fecha;
     }
 }
