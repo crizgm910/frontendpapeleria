@@ -24,6 +24,16 @@
       <Setter Property="Padding" Value="24" />
       <Setter Property="Margin" Value="0,0,0,24" />
     </Style>
+    <Style x:Key="SecondaryButton" TargetType="Button">
+      <Setter Property="MinHeight" Value="44" />
+      <Setter Property="Padding" Value="18,9" />
+      <Setter Property="Background" Value="White" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
     <!-- Menu Button Style -->
     <Style x:Key="MenuButtonStyle" TargetType="RadioButton">
       <Setter Property="Template">
@@ -121,13 +131,13 @@
       <TextBlock Text="Panel / Resumen" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4" />
       <Grid Margin="0,0,0,32">
         <TextBlock Text="Resumen operativo real del día - Papelería DB." FontSize="15" Foreground="{StaticResource TextSecondary}" />
-        <Button Content="Actualizar" Command="{Binding LoadDataCommand}" HorizontalAlignment="Right" Padding="18,8" />
+        <Button Style="{StaticResource SecondaryButton}" Content="Actualizar" Command="{Binding LoadDataCommand}" HorizontalAlignment="Right" />
       </Grid>
       <TextBlock Text="{Binding Mensaje}" Foreground="#B45309" Margin="0,-20,0,20" TextWrapping="Wrap" />
       <!-- 4 Summary Cards -->
-      <UniformGrid Columns="4" Margin="0,0,0,24">
+      <UniformGrid Columns="2" Margin="0,0,0,24">
         <!-- Card 1 -->
-        <Border Style="{StaticResource CardStyle}" Margin="0,0,24,0">
+        <Border Style="{StaticResource CardStyle}" Margin="0,0,12,12">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
@@ -137,14 +147,14 @@
               <TextBlock Text="&#x1F4CA;" FontSize="20" Foreground="{StaticResource BrandBlue}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <StackPanel Grid.Column="1">
-              <TextBlock Text="VENTAS DEL DÍA" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
+              <TextBlock Text="VENTAS DEL DÍA" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" TextWrapping="Wrap" />
               <TextBlock Text="{Binding VentasDelDia, StringFormat={}{0:C2}}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
-              <TextBlock Text="{Binding TotalVentasHoy, StringFormat={}{0} venta(s) registrada(s)}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource SuccessText}" />
+              <TextBlock Text="{Binding TotalVentasHoy, StringFormat={}{0} venta(s) registrada(s)}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource SuccessText}" TextWrapping="Wrap" />
             </StackPanel>
           </Grid>
         </Border>
         <!-- Card 2 -->
-        <Border Style="{StaticResource CardStyle}" Margin="0,0,24,0">
+        <Border Style="{StaticResource CardStyle}" Margin="12,0,0,12">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
@@ -154,14 +164,14 @@
               <TextBlock Text="&#x1F4B2;" FontSize="20" Foreground="{StaticResource SuccessText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <StackPanel Grid.Column="1">
-              <TextBlock Text="CAJA ACTIVA / CORTE" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
+              <TextBlock Text="CAJA ACTIVA / CORTE" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" TextWrapping="Wrap" />
               <TextBlock Text="{Binding EfectivoEsperado, StringFormat={}{0:C2}}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
-              <TextBlock Text="{Binding EstadoCaja}" FontSize="13" Foreground="{StaticResource TextMuted}" />
+              <TextBlock Text="{Binding EstadoCaja}" FontSize="13" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" />
             </StackPanel>
           </Grid>
         </Border>
         <!-- Card 3 -->
-        <Border Style="{StaticResource CardStyle}" Margin="0,0,24,0">
+        <Border Style="{StaticResource CardStyle}" Margin="0,12,12,0">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
@@ -171,14 +181,14 @@
               <TextBlock Text="&#x1F4C4;" FontSize="20" Foreground="{StaticResource WarningText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <StackPanel Grid.Column="1">
-              <TextBlock Text="SERVICIOS HOY" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
+              <TextBlock Text="SERVICIOS HOY" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" TextWrapping="Wrap" />
               <TextBlock Text="{Binding ServiciosHoy}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
-              <TextBlock Text="Servicios incluidos en ventas" FontSize="13" Foreground="{StaticResource TextMuted}" />
+              <TextBlock Text="Servicios incluidos en ventas" FontSize="13" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" />
             </StackPanel>
           </Grid>
         </Border>
         <!-- Card 4 -->
-        <Border Style="{StaticResource CardStyle}" Margin="0">
+        <Border Style="{StaticResource CardStyle}" Margin="12,12,0,0">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
@@ -188,7 +198,7 @@
               <TextBlock Text="&#x26A0;" FontSize="20" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <StackPanel Grid.Column="1">
-              <TextBlock Text="ALERTAS BAJO STOCK" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" />
+              <TextBlock Text="ALERTAS BAJO STOCK" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="0,0,0,4" TextWrapping="Wrap" />
               <TextBlock Text="{Binding AlertasStock}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8" />
               <TextBlock Text="&#x2192; Ver productos" FontSize="13" FontWeight="SemiBold" Foreground="#EF4444" />
             </StackPanel>
@@ -219,6 +229,8 @@
                     <Style TargetType="TextBlock">
                       <Setter Property="Foreground" Value="{StaticResource BrandBlue}" />
                       <Setter Property="FontWeight" Value="SemiBold" />
+                      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                      <Setter Property="ToolTip" Value="{Binding Folio}" />
                     </Style>
                   </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -227,6 +239,8 @@
                     <Style TargetType="TextBlock">
                       <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
                       <Setter Property="FontWeight" Value="Medium" />
+                      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                      <Setter Property="ToolTip" Value="{Binding Cliente}" />
                     </Style>
                   </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>

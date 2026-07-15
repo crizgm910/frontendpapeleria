@@ -342,7 +342,7 @@
                 </Grid>
               </StackPanel>
             </Border>
-            <!-- MÃ©todo de pago Card -->
+            <!-- Método de pago -->
             <Border Style="{StaticResource CardStyle}">
               <StackPanel>
                 <TextBlock Text="M&#233;todo de pago" FontWeight="Bold" FontSize="14" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,24" />

@@ -219,7 +219,6 @@
           </Button>
           <Button Command="{Binding ExportarVentasCommand}" Style="{StaticResource OutlinedButton}" Margin="0,0,16,0" Cursor="Hand">
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="&#x21e9;" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center" />
               <TextBlock Text="Exportar" FontSize="14" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
@@ -284,7 +283,23 @@
               <DataGridTemplateColumn Header="ACCIONES" Width="1*">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
-                    <Button Content="Devolver" Command="{Binding DataContext.AbrirDevolucionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Padding="10,5" Foreground="#7E22CE" />
+                    <Button Command="{Binding DataContext.AbrirDevolucionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                            CommandParameter="{Binding}">
+                      <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource OutlinedButton}">
+                          <Setter Property="Content" Value="Devolver" />
+                          <Setter Property="Foreground" Value="#7E22CE" />
+                          <Setter Property="Padding" Value="12,6" />
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding Estado}" Value="Cancelada">
+                              <Setter Property="Content" Value="Devuelta" />
+                              <Setter Property="IsEnabled" Value="False" />
+                              <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </Button.Style>
+                    </Button>
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>

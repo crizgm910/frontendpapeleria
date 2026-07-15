@@ -159,20 +159,19 @@
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-          <TextBlock Text="CatÃ¡logo de Productos" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4" />
-          <TextBlock Text="Gestiona artÃ­culos, categorÃ­as, precios y existencias." FontSize="15" Foreground="{StaticResource TextSecondary}" />
+          <TextBlock Text="Cat&#225;logo de productos" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4" />
+          <TextBlock Text="Gestiona art&#237;culos, categor&#237;as, precios y existencias." FontSize="15" Foreground="{StaticResource TextSecondary}" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
           <Button Style="{StaticResource OutlinedButton}" Margin="0,0,16,0">
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="â‡«" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center" />
               <TextBlock Text="Importar" FontSize="14" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
           <Button Style="{StaticResource PrimaryButton}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Text="+" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
-              <TextBlock Text="Nuevo artÃ­culo" FontSize="14" VerticalAlignment="Center" />
+              <TextBlock Text="Nuevo art&#237;culo" FontSize="14" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
         </StackPanel>
@@ -201,7 +200,7 @@
                      Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
                      Margin="0,0,12,0"/>
 
-            <!-- BotÃ³n Filtros funcional -->
+            <!-- Botón de filtros -->
             <Button Grid.Column="1" 
                     Command="{Binding AlternarFiltrosCommand}"
                     Height="40" 
@@ -228,7 +227,7 @@
           <!-- DataGrid -->
           <DataGrid Grid.Row="2" ItemsSource="{Binding ArticulosView}" Style="{StaticResource CleanDataGrid}" ColumnHeaderStyle="{StaticResource CleanDataGridColumnHeader}" RowStyle="{StaticResource CleanDataGridRow}" CellStyle="{StaticResource CleanDataGridCell}" Margin="24,16,24,24">
             <DataGrid.Columns>
-              <DataGridTextColumn Header="ARTÃCULO" Binding="{Binding Nombre}" Width="3*">
+              <DataGridTextColumn Header="ART&#205;CULO" Binding="{Binding Nombre}" Width="2.4*">
                 <DataGridTextColumn.ElementStyle>
                   <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
@@ -237,22 +236,24 @@
                   </Style>
                 </DataGridTextColumn.ElementStyle>
               </DataGridTextColumn>
-              <DataGridTextColumn Header="SKU" Binding="{Binding Sku}" Width="1.5*">
+              <DataGridTextColumn Header="SKU" Binding="{Binding Sku}" Width="2*">
                 <DataGridTextColumn.ElementStyle>
                   <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
                     <Setter Property="FontFamily" Value="Consolas, Courier New, monospace" />
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                    <Setter Property="ToolTip" Value="{Binding Sku}" />
                   </Style>
                 </DataGridTextColumn.ElementStyle>
               </DataGridTextColumn>
-              <DataGridTextColumn Header="CATEGORÃA" Binding="{Binding Categoria}" Width="1.5*">
+              <DataGridTextColumn Header="CATEGOR&#205;A" Binding="{Binding Categoria}" Width="1.3*">
                 <DataGridTextColumn.ElementStyle>
                   <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
                   </Style>
                 </DataGridTextColumn.ElementStyle>
               </DataGridTextColumn>
-              <DataGridTextColumn Header="PRECIO" Binding="{Binding Precio, StringFormat=\{0:C\}}" Width="1.5*">
+              <DataGridTextColumn Header="PRECIO" Binding="{Binding Precio, StringFormat=\{0:C\}}" Width="1.1*">
                 <DataGridTextColumn.ElementStyle>
                   <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
@@ -260,14 +261,14 @@
                   </Style>
                 </DataGridTextColumn.ElementStyle>
               </DataGridTextColumn>
-              <DataGridTextColumn Header="STOCK" Binding="{Binding Stock}" Width="1*">
+              <DataGridTextColumn Header="STOCK" Binding="{Binding Stock}" Width="0.8*">
                 <DataGridTextColumn.ElementStyle>
                   <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
                   </Style>
                 </DataGridTextColumn.ElementStyle>
               </DataGridTextColumn>
-              <DataGridTemplateColumn Header="ESTADO" Width="1.5*">
+              <DataGridTemplateColumn Header="ESTADO" Width="1.1*">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
                     <Border Style="{StaticResource StatusBadgeStyle}">
@@ -276,12 +277,12 @@
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>
-              <DataGridTemplateColumn Header="ACCIONES" Width="1*">
+              <DataGridTemplateColumn Header="ACCIONES" Width="1.3*">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                      <TextBlock Text="â€¦" Foreground="{StaticResource TextMuted}" FontSize="16" FontWeight="Bold" Margin="0,0,12,0" Cursor="Hand" />
-                      <TextBlock Text="ðŸ‘" Foreground="{StaticResource TextMuted}" FontSize="16" Cursor="Hand" />
+                      <TextBlock Text="Ver" Foreground="{StaticResource BrandBlue}" FontSize="12" FontWeight="SemiBold" Margin="0,0,10,0" Cursor="Hand" />
+                      <TextBlock Text="Editar" Foreground="{StaticResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Cursor="Hand" />
                     </StackPanel>
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
@@ -294,7 +295,7 @@
               <StackPanel>
                   <TextBlock Text="Categor&#237;as r&#225;pidas" FontSize="12" FontWeight="Bold" Foreground="#94A3B8" Margin="0,0,0,10"/>
                   <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                      <!-- BotÃ³n PapelerÃ­a -->
+                      <!-- Botón Papelería -->
                       <Button Command="{Binding SeleccionarCategoriaCommand}" CommandParameter="Papeler&#237;a" Margin="0,0,8,0" Height="36" Cursor="Hand">
                           <Button.Template>
                               <ControlTemplate TargetType="Button">
@@ -312,7 +313,7 @@
                           </Button.Template>
                       </Button>
                       
-                      <!-- BotÃ³n Oficina -->
+                      <!-- Botón Oficina -->
                       <Button Command="{Binding SeleccionarCategoriaCommand}" CommandParameter="Oficina" Margin="0,0,8,0" Height="36" Cursor="Hand">
                           <Button.Template>
                               <ControlTemplate TargetType="Button">
@@ -330,7 +331,7 @@
                           </Button.Template>
                       </Button>
                       
-                      <!-- BotÃ³n Regalos -->
+                      <!-- Botón Regalos -->
                       <Button Command="{Binding SeleccionarCategoriaCommand}" CommandParameter="Regalos" Margin="0,0,8,0" Height="36" Cursor="Hand">
                           <Button.Template>
                               <ControlTemplate TargetType="Button">
@@ -348,7 +349,7 @@
                           </Button.Template>
                       </Button>
                       
-                      <!-- BotÃ³n Servicios -->
+                      <!-- Botón Servicios -->
                       <Button Command="{Binding SeleccionarCategoriaCommand}" CommandParameter="Servicios" Margin="0,0,8,0" Height="36" Cursor="Hand">
                           <Button.Template>
                               <ControlTemplate TargetType="Button">

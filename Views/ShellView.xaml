@@ -79,7 +79,7 @@
                             </StackPanel>
                         </RadioButton>
                         
-                        <!-- Ventas / POS (NavegaciÃ³n directa al historial) -->
+                        <!-- Ventas / POS -->
                         <RadioButton Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateCommand}" CommandParameter="HistorialVentas" GroupName="Menu">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#128182;" FontSize="16" Foreground="{StaticResource TextMuted}" Margin="0,0,12,0"/>
@@ -100,7 +100,7 @@
                             </Grid>
                         </RadioButton>
 
-                        <!-- CatÃ¡logo -->
+                        <!-- Catálogo -->
                         <RadioButton Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateCommand}" CommandParameter="Catalogo" GroupName="Menu">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#128230;" FontSize="16" Foreground="{StaticResource TextMuted}" Margin="0,0,12,0"/>
@@ -139,7 +139,7 @@
                             </StackPanel>
                         </RadioButton>
 
-                        <!-- ConfiguraciÃ³n -->
+                        <!-- Configuración -->
                         <RadioButton Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateCommand}" CommandParameter="Configuracion" GroupName="Menu">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#9881;" FontSize="16" Foreground="{StaticResource TextMuted}" Margin="0,0,12,0"/>
@@ -183,6 +183,20 @@
                                     Command="{Binding MostrarNotificacionesCommand}"
                                     Background="White" BorderBrush="{StaticResource BorderColor}"
                                     BorderThickness="1" Cursor="Hand" ToolTip="Ver notificaciones">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="BellBorder" Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="20">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="BellBorder" Property="Background" Value="{StaticResource BgLight}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
                                 <TextBlock Text="&#128276;" Foreground="{StaticResource TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button>
                             <Border Width="9" Height="9" Background="#F59E0B" CornerRadius="5"

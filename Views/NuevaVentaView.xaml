@@ -297,7 +297,7 @@
                 </StackPanel>
               </Grid>
               <!-- Search Product -->
-              <TextBox Grid.Row="1" Style="{StaticResource CleanTextBox}" Text="Escanear cÃ³digo de barras o buscar producto..." Margin="24,0,24,24" Foreground="{StaticResource TextMuted}" />
+              <TextBox Grid.Row="1" Style="{StaticResource CleanTextBox}" Text="Escanear c&#243;digo de barras o buscar producto..." Margin="24,0,24,24" Foreground="{StaticResource TextMuted}" />
               <!-- DataGrid -->
               <DataGrid Grid.Row="3" ItemsSource="{Binding Items}" Style="{StaticResource CleanDataGrid}" ColumnHeaderStyle="{StaticResource CleanDataGridColumnHeader}" RowStyle="{StaticResource CleanDataGridRow}" CellStyle="{StaticResource CleanDataGridCell}" Margin="24,0,24,24">
                 <DataGrid.Columns>
@@ -362,10 +362,10 @@
               </Grid>
             </StackPanel>
           </Border>
-          <!-- MÃ©todo de pago Card -->
+          <!-- Método de pago -->
           <Border Style="{StaticResource CardStyle}">
             <StackPanel>
-              <TextBlock Text="MÃ©todo de pago" FontWeight="Bold" FontSize="14" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,24" />
+              <TextBlock Text="M&#233;todo de pago" FontWeight="Bold" FontSize="14" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,24" />
               <WrapPanel Margin="0,0,0,24">
                 <RadioButton Style="{StaticResource PaymentToggle}" IsChecked="True" GroupName="Payment">
                   <TextBlock Text="Efectivo">

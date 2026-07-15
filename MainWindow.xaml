@@ -6,7 +6,7 @@
         xmlns:views="clr-namespace:PapeleriaDB.Views"
         xmlns:viewmodels="clr-namespace:PapeleriaDB.ViewModels"
         mc:Ignorable="d"
-        Title="Papeleria - SODI" Height="700" Width="1100"
+        Title="Papelería DB" Height="700" Width="1100" MinHeight="650" MinWidth="1000"
         WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <viewmodels:MainViewModel />
