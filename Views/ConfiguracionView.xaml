@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <UserControl x:Class="PapeleriaDB.Views.ConfiguracionView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:viewmodels="clr-namespace:PapeleriaDB.ViewModels" mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1440" FontFamily="Segoe UI, Inter, Roboto, Arial, sans-serif">
   <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     <!-- Colors -->
     <SolidColorBrush x:Key="BrandBlue" Color="#2563EB" />
     <SolidColorBrush x:Key="BrandBlueLight" Color="#EFF6FF" />
@@ -183,7 +184,8 @@
             </StackPanel>
           </StackPanel>
           
-          <Button Grid.Column="2" Style="{StaticResource OutlinedButtonDanger}" VerticalAlignment="Center">
+          <Button Grid.Column="2" Style="{StaticResource OutlinedButtonDanger}" VerticalAlignment="Center"
+                  Command="{Binding CerrarSesionCommand}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Text="Cerrar Sesi&#243;n" />
             </StackPanel>
@@ -225,6 +227,12 @@
           <Button Content="Abrir caja"
                   Command="{Binding AbrirCajaCommand}"
                   Style="{StaticResource OutlinedButtonBlue}"
+                  IsEnabled="{Binding PuedeAbrirCaja}"
+                  MinHeight="44" Margin="0,0,8,0" />
+          <Button Content="Cerrar caja"
+                  Command="{Binding IrACerrarCajaCommand}"
+                  Style="{StaticResource OutlinedButtonDanger}"
+                  Visibility="{Binding CajaEstaAbierta, Converter={StaticResource BoolToVisibility}}"
                   MinHeight="44" />
           </StackPanel>
           <TextBlock Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding EstadoConfiguracion}"

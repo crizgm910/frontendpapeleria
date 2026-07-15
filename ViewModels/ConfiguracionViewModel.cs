@@ -1,11 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using PapeleriaDB.Models;
 using PapeleriaDB.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PapeleriaDB.ViewModels
 {
@@ -13,13 +15,15 @@ namespace PapeleriaDB.ViewModels
     {
         private readonly ApiService _apiService;
         private readonly ApplicationSession _session;
+        private readonly AuthClientService _authService;
 
         public ObservableCollection<CajaDto> CajasDisponibles { get; } = new();
 
-        public ConfiguracionViewModel(ApiService apiService, ApplicationSession session)
+        public ConfiguracionViewModel(ApiService apiService, ApplicationSession session, AuthClientService authService)
         {
             _apiService = apiService;
             _session = session;
+            _authService = authService;
             _terminalId = session.TerminalId;
         }
 
@@ -55,6 +59,15 @@ namespace PapeleriaDB.ViewModels
 
         [ObservableProperty]
         private bool _abriendoCaja;
+
+        public bool CajaEstaAbierta => CajaSeleccionada?.EstaAbierta == true;
+        public bool PuedeAbrirCaja => !CajaEstaAbierta;
+
+        partial void OnCajaSeleccionadaChanged(CajaDto? value)
+        {
+            OnPropertyChanged(nameof(CajaEstaAbierta));
+            OnPropertyChanged(nameof(PuedeAbrirCaja));
+        }
 
         [RelayCommand]
         public async Task LoadCajasAsync()
@@ -159,6 +172,39 @@ namespace PapeleriaDB.ViewModels
             {
                 AbriendoCaja = false;
             }
+        }
+
+        [RelayCommand]
+        private void IrACerrarCaja()
+        {
+            if (!CajaEstaAbierta)
+            {
+                EstadoConfiguracion = "La caja seleccionada ya está cerrada.";
+                return;
+            }
+
+            if (CajaSeleccionada is not null && CajaSeleccionada.Id != _session.CajaId)
+                _session.AssignCaja(CajaSeleccionada.Id, TerminalId);
+
+            WeakReferenceMessenger.Default.Send(new NavigationRequestedMessage("CorteCaja"));
+        }
+
+        [RelayCommand]
+        private void CerrarSesion()
+        {
+            var avisoCaja = CajaEstaAbierta
+                ? " La caja permanecerá abierta hasta que realices el corte."
+                : string.Empty;
+            var respuesta = MessageBox.Show(
+                $"¿Quieres cerrar la sesión?{avisoCaja}",
+                "Cerrar sesión",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (respuesta != MessageBoxResult.Yes) return;
+
+            _authService.Logout();
+            WeakReferenceMessenger.Default.Send(new UserAuthenticationChangedMessage(false));
         }
     }
 }

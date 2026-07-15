@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using PapeleriaDB.Messages;
+using PapeleriaDB.Models;
+using PapeleriaDB.Services;
+using System.Collections.ObjectModel;
 
 namespace PapeleriaDB.ViewModels
 {
@@ -14,8 +17,25 @@ namespace PapeleriaDB.ViewModels
         [ObservableProperty]
         private int _totalServicios;
 
-        public ShellViewModel()
+        [ObservableProperty]
+        private bool _notificacionesAbiertas;
+
+        [ObservableProperty]
+        private bool _cargandoNotificaciones;
+
+        [ObservableProperty]
+        private int _totalNotificaciones;
+
+        public ObservableCollection<string> Notificaciones { get; } = new();
+        public bool TieneNotificaciones => TotalNotificaciones > 0;
+
+        private readonly ApiService _apiService;
+        private readonly ApplicationSession _session;
+
+        public ShellViewModel(ApiService apiService, ApplicationSession session)
         {
+            _apiService = apiService;
+            _session = session;
             // Initial view
             CurrentPage = App.Current.Services.GetRequiredService<PanelResumenViewModel>();
 
@@ -23,6 +43,62 @@ namespace PapeleriaDB.ViewModels
             {
                 TotalServicios = m.TotalCount;
             });
+
+            WeakReferenceMessenger.Default.Register<NavigationRequestedMessage>(this, (r, m) =>
+            {
+                Navigate(m.Target);
+            });
+        }
+
+        partial void OnTotalNotificacionesChanged(int value) => OnPropertyChanged(nameof(TieneNotificaciones));
+
+        [RelayCommand]
+        private async Task MostrarNotificacionesAsync()
+        {
+            if (NotificacionesAbiertas)
+            {
+                NotificacionesAbiertas = false;
+                return;
+            }
+
+            NotificacionesAbiertas = true;
+            CargandoNotificaciones = true;
+            Notificaciones.Clear();
+            Notificaciones.Add("Consultando avisos...");
+
+            try
+            {
+                var avisos = new List<string>();
+                var dashboard = await _apiService.GetAsync<MobileDashboardDto>("api/mobile/dashboard");
+                if (dashboard.TotalAlertasStock > 0)
+                    avisos.Add($"{dashboard.TotalAlertasStock} producto(s) necesitan reposición de stock.");
+
+                if (_session.CajaId <= 0)
+                {
+                    avisos.Add("Esta computadora todavía no tiene una caja asignada.");
+                }
+                else
+                {
+                    var caja = await _apiService.GetAsync<CajaSupervisionDto>($"api/cajas/{_session.CajaId}/estado?historial=1");
+                    if (!caja.EstaAbierta)
+                        avisos.Add($"{caja.Nombre} está cerrada. Ábrela antes de registrar ventas.");
+                }
+
+                Notificaciones.Clear();
+                foreach (var aviso in avisos) Notificaciones.Add(aviso);
+                TotalNotificaciones = avisos.Count;
+                if (avisos.Count == 0) Notificaciones.Add("No hay alertas pendientes.");
+            }
+            catch (Exception)
+            {
+                Notificaciones.Clear();
+                Notificaciones.Add("No se pudieron consultar las alertas. Revisa la conexión e inténtalo otra vez.");
+                TotalNotificaciones = 1;
+            }
+            finally
+            {
+                CargandoNotificaciones = false;
+            }
         }
 
         [RelayCommand]

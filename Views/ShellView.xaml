@@ -179,10 +179,34 @@
                         <!-- Notification Bell -->
                         <!-- Fix 4 applied: Gear Icon removed next to notification bell -->
                         <Grid Margin="0,0,24,0">
-                            <Border Width="36" Height="36" CornerRadius="18" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Background="White">
+                            <Button x:Name="NotificationButton" Width="40" Height="40"
+                                    Command="{Binding MostrarNotificacionesCommand}"
+                                    Background="White" BorderBrush="{StaticResource BorderColor}"
+                                    BorderThickness="1" Cursor="Hand" ToolTip="Ver notificaciones">
                                 <TextBlock Text="&#128276;" Foreground="{StaticResource TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <Border Width="8" Height="8" Background="#F59E0B" CornerRadius="4" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,2,0"/>
+                            </Button>
+                            <Border Width="9" Height="9" Background="#F59E0B" CornerRadius="5"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,1,1,0"
+                                    Visibility="{Binding TieneNotificaciones, Converter={StaticResource BoolToVis}}"/>
+                            <Popup IsOpen="{Binding NotificacionesAbiertas}" PlacementTarget="{Binding ElementName=NotificationButton}"
+                                   Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                                <Border Width="340" Margin="0,8,0,0" Padding="18" Background="White"
+                                        BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="12">
+                                    <StackPanel>
+                                        <TextBlock Text="Notificaciones" FontSize="16" FontWeight="Bold"
+                                                   Foreground="{StaticResource TextPrimary}" Margin="0,0,0,12"/>
+                                        <ItemsControl ItemsSource="{Binding Notificaciones}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="{StaticResource BgLight}" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
                         </Grid>
                         
                         <!-- Mini Profile Dropdown -->
