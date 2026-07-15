@@ -251,15 +251,17 @@
           <!-- Datos del Cliente -->
           <Border Style="{StaticResource CardStyle}">
             <StackPanel>
-              <TextBlock Text="Datos del cliente" FontWeight="Bold" FontSize="14" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,16" />
-              <TextBox Style="{StaticResource CleanTextBox}" Text="Buscar cliente por nombre, RFC o telÃ©fono..." Margin="0,0,0,16" Foreground="{StaticResource TextMuted}" />
+              <TextBlock Text="Datos del cliente (opcional)" FontWeight="Bold" FontSize="14" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,6" />
+              <TextBlock Text="Puedes dejar estos campos vac&#237;os para una venta a p&#250;blico general."
+                         Foreground="{StaticResource TextMuted}" Margin="0,0,0,16" />
+              <TextBox Style="{StaticResource CleanTextBox}" Text="Nombre del cliente (opcional)" Margin="0,0,0,16" Foreground="{StaticResource TextMuted}" />
               <Grid>
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="1*" />
                   <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Style="{StaticResource CleanTextBox}" Text="NÃºmero de telÃ©fono (opcional)" Margin="0,0,16,0" Foreground="{StaticResource TextMuted}" />
-                <TextBox Grid.Column="1" Style="{StaticResource CleanTextBox}" Text="RFC (para factura)" Foreground="{StaticResource TextMuted}" />
+                <TextBox Grid.Column="0" Style="{StaticResource CleanTextBox}" Text="N&#250;mero de tel&#233;fono (opcional)" Margin="0,0,16,0" Foreground="{StaticResource TextMuted}" />
+                <TextBox Grid.Column="1" Style="{StaticResource CleanTextBox}" Text="RFC para factura (opcional)" Foreground="{StaticResource TextMuted}" />
               </Grid>
             </StackPanel>
           </Border>
