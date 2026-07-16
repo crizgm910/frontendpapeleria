@@ -64,11 +64,6 @@ public partial class DevolucionViewModel : ObservableObject
         var seleccion = Lineas.Where(l => l.CantidadDevolver > 0).ToList();
         if (seleccion.Count == 0) { Mensaje = "Selecciona al menos una unidad para devolver."; return; }
         if (seleccion.Any(l => l.CantidadDevolver > l.CantidadDisponible)) { Mensaje = "Una cantidad supera lo vendido."; return; }
-        if (_session.CajaId <= 0) { Mensaje = "Esta computadora no tiene una caja asignada."; return; }
-
-        var cajas = await _apiService.GetAsync<CajaDto[]>("api/cajas");
-        var caja = cajas.FirstOrDefault(c => c.Id == _session.CajaId);
-        if (caja is null || !caja.EstaAbierta) { Mensaje = "La caja asignada está cerrada. Ábrela antes de devolver dinero."; return; }
 
         var confirmacion = MessageBox.Show(
             $"Se devolverán {seleccion.Sum(x => x.CantidadDevolver)} unidad(es) por aproximadamente {ReembolsoEstimado:C2}. ¿Continuar?",
@@ -78,8 +73,11 @@ public partial class DevolucionViewModel : ObservableObject
         try
         {
             IsProcessing = true;
+            var contextoCaja = _session.CajaId > 0
+                ? $"?cajaId={_session.CajaId}&usuarioId={_session.UsuarioId}"
+                : string.Empty;
             var result = await _apiService.PostAsync<List<DevolucionItemDto>, DevolucionResponseDto>(
-                $"api/ventas/{_venta.Id}/devolucion",
+                $"api/ventas/{_venta.Id}/devolucion{contextoCaja}",
                 seleccion.Select(l => new DevolucionItemDto { DetalleVentaId = l.DetalleId, CantidadDevolver = l.CantidadDevolver }).ToList());
             if (!result.Exito) { Mensaje = result.Mensaje; return; }
             MessageBox.Show($"Devolución completada. Reembolso: {result.MontoReembolsado:C2}", "Devolución", MessageBoxButton.OK, MessageBoxImage.Information);
