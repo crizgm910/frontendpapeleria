@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using PapeleriaDB.Models;
 using System;
+using System.Linq;
 
 namespace PapeleriaDB.Services
 {
@@ -27,6 +28,7 @@ namespace PapeleriaDB.Services
                 {
                     _apiService.SetToken(response.Token);
                     _session.Start(response.Token);
+                    await AssignCajaPrincipalAsync();
                 }
                 
                 return response ?? new AuthResponseDto { Exito = false, Mensaje = "Error desconocido." };
@@ -35,6 +37,17 @@ namespace PapeleriaDB.Services
             {
                 return new AuthResponseDto { Exito = false, Mensaje = ex.Message };
             }
+        }
+
+        private async Task AssignCajaPrincipalAsync()
+        {
+            var cajas = await _apiService.GetAsync<CajaDto[]>("api/cajas");
+            var principal = cajas.FirstOrDefault(c =>
+                                c.Nombre.Equals("Caja Principal", StringComparison.OrdinalIgnoreCase))
+                            ?? cajas.OrderBy(c => c.Id).FirstOrDefault();
+
+            if (principal is not null)
+                _session.AssignCaja(principal.Id, _session.TerminalId);
         }
 
         public void Logout()

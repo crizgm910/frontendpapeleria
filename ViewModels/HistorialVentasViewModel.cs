@@ -13,6 +13,8 @@ namespace PapeleriaDB.ViewModels
     public partial class HistorialVentasViewModel : ObservableRecipient
     {
         private readonly ApiService _apiService;
+        private readonly TicketPrintingService _ticketPrintingService;
+        private readonly ApplicationSession _session;
 
         public ObservableCollection<VentaDto> Ventas { get; }
 
@@ -25,9 +27,11 @@ namespace PapeleriaDB.ViewModels
         [ObservableProperty]
         private string _mensaje = string.Empty;
 
-        public HistorialVentasViewModel(ApiService apiService)
+        public HistorialVentasViewModel(ApiService apiService, TicketPrintingService ticketPrintingService, ApplicationSession session)
         {
             _apiService = apiService;
+            _ticketPrintingService = ticketPrintingService;
+            _session = session;
             Ventas = new ObservableCollection<VentaDto>();
             _ = CargarHistorialVentasAsync();
         }
@@ -58,6 +62,29 @@ namespace PapeleriaDB.ViewModels
             {
                 Mensaje = $"No se pudo cargar el historial: {ex.Message}";
             }
+        }
+
+        [RelayCommand]
+        private void ImprimirTicket(VentaDto? venta)
+        {
+            if (venta is null) return;
+            _ticketPrintingService.Print(new TicketData
+            {
+                Folio = venta.Folio,
+                Fecha = venta.Fecha.ToLocalTime(),
+                MetodoPago = venta.MetodoPago,
+                Terminal = _session.TerminalId,
+                Subtotal = venta.Subtotal,
+                Descuento = venta.Descuento,
+                Total = venta.Total,
+                Lineas = venta.Detalles.Select(item => new TicketLinea
+                {
+                    Descripcion = item.Descripcion,
+                    Cantidad = item.Cantidad,
+                    PrecioUnitario = item.PrecioUnitario,
+                    Subtotal = item.Subtotal
+                }).ToArray()
+            });
         }
 
         [RelayCommand]

@@ -280,9 +280,17 @@
                   </Style>
                 </DataGridTextColumn.ElementStyle>
               </DataGridTextColumn>
-              <DataGridTemplateColumn Header="ACCIONES" Width="1*">
+              <DataGridTemplateColumn Header="ACCIONES" Width="2.2*">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                    <Button Content="Ticket"
+                            Command="{Binding DataContext.ImprimirTicketCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource OutlinedButton}"
+                            Foreground="#2563EB"
+                            Padding="12,6"
+                            Margin="0,0,8,0" />
                     <Button Command="{Binding DataContext.AbrirDevolucionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                             CommandParameter="{Binding}">
                       <Button.Style>
@@ -300,6 +308,7 @@
                         </Style>
                       </Button.Style>
                     </Button>
+                    </StackPanel>
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>

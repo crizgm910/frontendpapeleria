@@ -49,7 +49,7 @@ namespace PapeleriaDB.ViewModels
         private string _terminalId = string.Empty;
 
         [ObservableProperty]
-        private string _estadoConfiguracion = "Selecciona la caja que utilizará esta computadora.";
+        private string _estadoConfiguracion = "Todas las computadoras utilizan la Caja Principal.";
 
         [ObservableProperty]
         private bool _cargandoCajas;
@@ -79,15 +79,17 @@ namespace PapeleriaDB.ViewModels
                 EstadoConfiguracion = "Consultando cajas disponibles...";
                 var cajas = await _apiService.GetAsync<CajaDto[]>("api/cajas");
                 CajasDisponibles.Clear();
-                foreach (var caja in cajas.OrderBy(c => c.Id)) CajasDisponibles.Add(caja);
+                var principal = cajas.FirstOrDefault(c =>
+                                    c.Nombre.Equals("Caja Principal", StringComparison.OrdinalIgnoreCase))
+                                ?? cajas.OrderBy(c => c.Id).FirstOrDefault();
+                if (principal is not null) CajasDisponibles.Add(principal);
 
-                CajaSeleccionada = CajasDisponibles.FirstOrDefault(c => c.Id == _session.CajaId)
-                    ?? CajasDisponibles.FirstOrDefault();
+                CajaSeleccionada = principal;
+                if (principal is not null && _session.CajaId != principal.Id)
+                    _session.AssignCaja(principal.Id, TerminalId);
                 EstadoConfiguracion = CajasDisponibles.Count == 0
-                    ? "Todavía no hay cajas registradas."
-                    : _session.CajaId > 0
-                        ? $"Esta computadora usa la caja #{_session.CajaId}."
-                        : "Selecciona una caja y guarda la configuración.";
+                    ? "Todavía no existe la Caja Principal."
+                    : $"{TerminalId} está conectada a la Caja Principal compartida.";
             }
             catch (Exception ex)
             {
@@ -104,14 +106,14 @@ namespace PapeleriaDB.ViewModels
         {
             if (CajaSeleccionada is null)
             {
-                EstadoConfiguracion = "Selecciona una caja antes de guardar.";
+                EstadoConfiguracion = "No se encontró la Caja Principal.";
                 return;
             }
 
             try
             {
                 _session.AssignCaja(CajaSeleccionada.Id, TerminalId);
-                EstadoConfiguracion = $"Listo. {CajaSeleccionada.Nombre} quedó asignada a {TerminalId.Trim()}.";
+                EstadoConfiguracion = $"Listo. {TerminalId.Trim()} quedó conectada a la Caja Principal.";
             }
             catch (Exception ex)
             {
@@ -124,7 +126,7 @@ namespace PapeleriaDB.ViewModels
         {
             if (CajaSeleccionada is null)
             {
-                EstadoConfiguracion = "Selecciona una caja antes de abrirla.";
+                EstadoConfiguracion = "No se encontró la Caja Principal.";
                 return;
             }
 

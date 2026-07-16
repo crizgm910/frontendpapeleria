@@ -30,6 +30,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<ApiService>();
         services.AddSingleton<ApplicationSession>();
         services.AddSingleton<AuthClientService>();
+        services.AddSingleton<TicketPrintingService>();
 
         // ViewModels
         services.AddTransient<LoginViewModel>();

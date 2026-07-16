@@ -15,6 +15,7 @@ namespace PapeleriaDB.ViewModels
     {
         private readonly ApiService _apiService;
         private readonly ApplicationSession _session;
+        private readonly TicketPrintingService _ticketPrintingService;
 
         public ObservableCollection<DetalleVentaViewModel> DetallesVenta { get; } = new();
 
@@ -48,10 +49,11 @@ namespace PapeleriaDB.ViewModels
         [ObservableProperty]
         private bool _isProcessing;
 
-        public NuevaVentaViewModel(ApiService apiService, ApplicationSession session)
+        public NuevaVentaViewModel(ApiService apiService, ApplicationSession session, TicketPrintingService ticketPrintingService)
         {
             _apiService = apiService;
             _session = session;
+            _ticketPrintingService = ticketPrintingService;
             DetallesVenta.CollectionChanged += DetallesVenta_CollectionChanged;
         }
 
@@ -154,7 +156,31 @@ namespace PapeleriaDB.ViewModels
                 
                 if (response != null && response.Exito)
                 {
-                    MessageBox.Show("Venta registrada con éxito: " + response.Folio, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    var ticket = new TicketData
+                    {
+                        Folio = response.Folio,
+                        Fecha = DateTime.Now,
+                        MetodoPago = MetodoPagoPrincipal,
+                        Terminal = _session.TerminalId,
+                        Cliente = ClienteBusqueda,
+                        Subtotal = Subtotal,
+                        Descuento = Descuento,
+                        Total = response.Total,
+                        MontoRecibido = MetodoPagoPrincipal == "Efectivo" ? MontoRecibido : null,
+                        Lineas = DetallesVenta.Select(item => new TicketLinea
+                        {
+                            Descripcion = item.Nombre,
+                            Cantidad = item.Cantidad,
+                            PrecioUnitario = item.PrecioUnitario,
+                            Subtotal = item.Subtotal
+                        }).ToArray()
+                    };
+                    var imprimir = MessageBox.Show(
+                        $"Venta registrada con éxito: {response.Folio}\n\n¿Deseas imprimir el ticket ahora?",
+                        "Venta completada",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Information);
+                    if (imprimir == MessageBoxResult.Yes) _ticketPrintingService.Print(ticket);
                     if (window != null)
                     {
                         window.DialogResult = true;

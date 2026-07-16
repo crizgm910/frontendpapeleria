@@ -193,7 +193,7 @@
         </Grid>
       </Border>
 
-      <!-- Configuración independiente por computadora -->
+      <!-- Caja principal compartida por todas las computadoras -->
       <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24">
         <Grid>
           <Grid.RowDefinitions>
@@ -207,10 +207,11 @@
             <ColumnDefinition Width="0.8*" />
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,24,0">
-            <TextBlock Text="CAJA DE ESTA COMPUTADORA" Style="{StaticResource LabelStyle}" />
+            <TextBlock Text="CAJA PRINCIPAL COMPARTIDA" Style="{StaticResource LabelStyle}" />
             <ComboBox ItemsSource="{Binding CajasDisponibles}"
                       SelectedItem="{Binding CajaSeleccionada}"
                       DisplayMemberPath="Descripcion"
+                      IsEnabled="False"
                       MinHeight="44" Padding="12,8" />
           </StackPanel>
           <StackPanel Grid.Column="1" Margin="0,0,24,0">
@@ -224,7 +225,7 @@
                      Style="{StaticResource CleanTextBox}" />
           </StackPanel>
           <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,18,0,0" VerticalAlignment="Top">
-          <Button Content="Guardar asignación"
+          <Button Content="Guardar computadora"
                   Command="{Binding GuardarConfiguracionCommand}"
                   Style="{StaticResource SolidButtonBlue}"
                   MinHeight="44" Margin="0,0,8,0" />
