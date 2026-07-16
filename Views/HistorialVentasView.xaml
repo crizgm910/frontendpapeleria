@@ -220,7 +220,7 @@
           </Button>
           <Button Command="{Binding ExportarVentasCommand}" Style="{StaticResource OutlinedButton}" Margin="0,0,16,0" Cursor="Hand">
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="Exportar" FontSize="14" VerticalAlignment="Center" />
+              <TextBlock Text="Exportar reporte" FontSize="14" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
           <Button Command="{Binding AbrirNuevaVentaCommand}" Style="{StaticResource PrimaryButton}" Cursor="Hand">

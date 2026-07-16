@@ -8,10 +8,7 @@ using PapeleriaDB.Views;
 using PapeleriaDB.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Data;
 
 namespace PapeleriaDB.ViewModels
@@ -21,6 +18,7 @@ namespace PapeleriaDB.ViewModels
         private readonly ApiService _apiService;
         private readonly TicketPrintingService _ticketPrintingService;
         private readonly ApplicationSession _session;
+        private readonly ReportExportService _reportExportService;
 
         public ObservableCollection<VentaDto> Ventas { get; }
         public ICollectionView VentasView { get; }
@@ -41,11 +39,12 @@ namespace PapeleriaDB.ViewModels
         [ObservableProperty]
         private string _mensaje = string.Empty;
 
-        public HistorialVentasViewModel(ApiService apiService, TicketPrintingService ticketPrintingService, ApplicationSession session)
+        public HistorialVentasViewModel(ApiService apiService, TicketPrintingService ticketPrintingService, ApplicationSession session, ReportExportService reportExportService)
         {
             _apiService = apiService;
             _ticketPrintingService = ticketPrintingService;
             _session = session;
+            _reportExportService = reportExportService;
             Ventas = new ObservableCollection<VentaDto>();
             VentasView = CollectionViewSource.GetDefaultView(Ventas);
             VentasView.Filter = FiltrarVenta;
@@ -165,27 +164,33 @@ namespace PapeleriaDB.ViewModels
         [RelayCommand]
         private void ExportarVentas()
         {
+            var ventasExportadas = VentasView.Cast<VentaDto>().ToList();
+            if (ventasExportadas.Count == 0)
+            {
+                MessageBox.Show("No hay ventas visibles para exportar.", "Exportar reporte", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             var dialog = new Microsoft.Win32.SaveFileDialog
             {
                 Title = "Guardar reporte de ventas",
                 FileName = $"ventas-{DateTime.Now:yyyyMMdd-HHmm}",
-                DefaultExt = ".csv",
-                Filter = "Archivo CSV (*.csv)|*.csv"
+                DefaultExt = ".xlsx",
+                AddExtension = true,
+                Filter = "Excel (*.xlsx)|*.xlsx|PDF (*.pdf)|*.pdf"
             };
             if (dialog.ShowDialog() != true) return;
 
             try
             {
-                static string Csv(string valor) => $"\"{valor.Replace("\"", "\"\"")}\"";
-                var contenido = new StringBuilder("Folio,Metodo,Fecha,Estado,Subtotal,Descuento,Total\r\n");
-                foreach (var venta in VentasView.Cast<VentaDto>())
-                {
-                    contenido.AppendLine(string.Join(",",
-                        Csv(venta.Folio), Csv(venta.MetodoPago), Csv(venta.Fecha.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)),
-                        Csv(venta.Estado), venta.Subtotal.ToString(CultureInfo.InvariantCulture),
-                        venta.Descuento.ToString(CultureInfo.InvariantCulture), venta.Total.ToString(CultureInfo.InvariantCulture)));
-                }
-                File.WriteAllText(dialog.FileName, contenido.ToString(), new UTF8Encoding(true));
+                var descripcionFiltro = EstadoFiltroVentas == "Todos" ? "Todos los estados" : $"Estado: {EstadoFiltroVentas}";
+                if (!string.IsNullOrWhiteSpace(TextoFiltroVentas)) descripcionFiltro += $" · Búsqueda: {TextoFiltroVentas.Trim()}";
+
+                if (dialog.FilterIndex == 2)
+                    _reportExportService.ExportarPdf(dialog.FileName, ventasExportadas, descripcionFiltro);
+                else
+                    _reportExportService.ExportarExcel(dialog.FileName, ventasExportadas);
+
                 MessageBox.Show($"Reporte guardado correctamente en:\n\n{dialog.FileName}", "Exportación terminada", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
