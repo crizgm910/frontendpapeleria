@@ -13,6 +13,12 @@ namespace PapeleriaDB.ViewModels
         private readonly ApiService _apiService;
         public ObservableCollection<ServicioDto> ListaServicios { get; } = new();
 
+        [ObservableProperty]
+        private string _estadoActualizacion = string.Empty;
+
+        [ObservableProperty]
+        private bool _isLoading;
+
         public ServiciosViewModel(ApiService apiService)
         {
             _apiService = apiService;
@@ -22,6 +28,8 @@ namespace PapeleriaDB.ViewModels
         [RelayCommand]
         public async Task CargarServiciosAsync()
         {
+            IsLoading = true;
+            EstadoActualizacion = "Actualizando...";
             try
             {
                 // Llamada a la API usando el servicio centralizado que inyecta el Token JWT
@@ -39,11 +47,18 @@ namespace PapeleriaDB.ViewModels
                     });
                     
                     CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new PapeleriaDB.Messages.ServiciosActualizadosMessage(servicios.Count));
+                    EstadoActualizacion = $"Actualizado {System.DateTime.Now:h:mm tt} · {servicios.Count} servicio(s)";
                 }
             }
             catch (System.Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[ERROR] Fallo al cargar servicios: {ex.Message}");
+                EstadoActualizacion = "No se pudo actualizar";
+                System.Windows.MessageBox.Show($"No se pudieron actualizar los servicios.\n{ex.Message}", "Servicios", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 

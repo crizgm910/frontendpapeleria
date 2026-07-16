@@ -163,12 +163,12 @@
           <TextBlock Text="Gestiona art&#237;culos, categor&#237;as, precios y existencias." FontSize="15" Foreground="{StaticResource TextSecondary}" />
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-          <Button Style="{StaticResource OutlinedButton}" Margin="0,0,16,0">
+          <Button Style="{StaticResource OutlinedButton}" Margin="0,0,16,0" Command="{Binding ImportarCommand}" Cursor="Hand" ToolTip="Importar productos desde un archivo CSV">
             <StackPanel Orientation="Horizontal">
               <TextBlock Text="Importar" FontSize="14" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
-          <Button Style="{StaticResource PrimaryButton}">
+          <Button Style="{StaticResource PrimaryButton}" Command="{Binding NuevoArticuloCommand}" Cursor="Hand">
             <StackPanel Orientation="Horizontal">
               <TextBlock Text="+" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
               <TextBlock Text="Nuevo art&#237;culo" FontSize="14" VerticalAlignment="Center" />
@@ -281,8 +281,8 @@
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                      <TextBlock Text="Ver" Foreground="{StaticResource BrandBlue}" FontSize="12" FontWeight="SemiBold" Margin="0,0,10,0" Cursor="Hand" />
-                      <TextBlock Text="Editar" Foreground="{StaticResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Cursor="Hand" />
+                      <Button Content="Ver" Command="{Binding DataContext.VerArticuloCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Foreground="{StaticResource BrandBlue}" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,6,0" Cursor="Hand" />
+                      <Button Content="Editar" Command="{Binding DataContext.EditarArticuloCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Foreground="{StaticResource TextSecondary}" Background="Transparent" BorderThickness="0" Padding="4" Cursor="Hand" />
                     </StackPanel>
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>

@@ -1,5 +1,5 @@
 #define MyAppName "Papelería DB"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.1.1"
 #define MyAppPublisher "Papelería DB"
 #define MyAppExeName "PapeleriaDB.exe"
 

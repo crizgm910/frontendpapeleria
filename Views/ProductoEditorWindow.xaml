@@ -1,0 +1,49 @@
+<Window x:Class="PapeleriaDB.Views.ProductoEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Producto" Width="620" Height="690" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" Background="#F8FAFC">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="32">
+      <TextBlock Text="{Binding Titulo}" FontSize="28" FontWeight="Bold" Foreground="#111827"/>
+      <TextBlock Text="Los códigos se generan automáticamente si se dejan vacíos." Margin="0,6,0,24" Foreground="#6B7280"/>
+
+      <TextBlock Text="Nombre" FontWeight="SemiBold"/>
+      <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding EsSoloLectura}" Height="40" Margin="0,6,0,14"/>
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <StackPanel Margin="0,0,8,0">
+          <TextBlock Text="Código interno" FontWeight="SemiBold"/>
+          <TextBox Text="{Binding CodigoInterno}" IsReadOnly="{Binding EsSoloLectura}" Height="40" Margin="0,6,0,14"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+          <TextBlock Text="Código de barras" FontWeight="SemiBold"/>
+          <TextBox Text="{Binding CodigoBarras}" IsReadOnly="{Binding EsSoloLectura}" Height="40" Margin="0,6,0,14"/>
+        </StackPanel>
+      </Grid>
+      <TextBlock Text="Categoría" FontWeight="SemiBold"/>
+      <ComboBox ItemsSource="{Binding Categorias}" SelectedItem="{Binding CategoriaSeleccionada}" DisplayMemberPath="Nombre" Height="40" Margin="0,6,0,14"/>
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <StackPanel Margin="0,0,8,0">
+          <TextBlock Text="Precio de venta" FontWeight="SemiBold"/>
+          <TextBox Text="{Binding PrecioVenta}" IsReadOnly="{Binding EsSoloLectura}" Height="40" Margin="0,6,0,14"/>
+          <TextBlock Text="Stock actual" FontWeight="SemiBold"/>
+          <TextBox Text="{Binding StockActual}" IsReadOnly="{Binding EsSoloLectura}" Height="40" Margin="0,6,0,14"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+          <TextBlock Text="Costo de compra" FontWeight="SemiBold"/>
+          <TextBox Text="{Binding CostoCompra}" IsReadOnly="{Binding EsSoloLectura}" Height="40" Margin="0,6,0,14"/>
+          <TextBlock Text="Stock mínimo" FontWeight="SemiBold"/>
+          <TextBox Text="{Binding StockMinimo}" IsReadOnly="{Binding EsSoloLectura}" Height="40" Margin="0,6,0,14"/>
+        </StackPanel>
+      </Grid>
+      <TextBlock Text="Descripción (opcional)" FontWeight="SemiBold"/>
+      <TextBox Text="{Binding Descripcion}" IsReadOnly="{Binding EsSoloLectura}" Height="70" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,6,0,22"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Content="Cancelar" IsCancel="True" Padding="22,10" Margin="0,0,12,0"/>
+        <Button Content="{Binding TextoBoton}" Command="{Binding GuardarCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Padding="22,10" Background="#2563EB" Foreground="White" FontWeight="SemiBold"/>
+      </StackPanel>
+    </StackPanel>
+  </ScrollViewer>
+</Window>

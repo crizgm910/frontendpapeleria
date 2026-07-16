@@ -204,6 +204,7 @@
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <TextBlock Text="Gesti&#243;n de Servicios" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4" />
           <TextBlock Text="Cat&#225;logo administrativo de servicios disponibles." FontSize="15" Foreground="{StaticResource TextSecondary}" />
+          <TextBlock Text="{Binding EstadoActualizacion}" FontSize="12" Foreground="{StaticResource TextMuted}" Margin="0,5,0,0" />
         </StackPanel>
         
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">

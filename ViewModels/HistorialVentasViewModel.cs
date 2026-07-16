@@ -7,6 +7,12 @@ using PapeleriaDB.Models;
 using PapeleriaDB.Views;
 using PapeleriaDB.Services;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Data;
 
 namespace PapeleriaDB.ViewModels
 {
@@ -17,9 +23,17 @@ namespace PapeleriaDB.ViewModels
         private readonly ApplicationSession _session;
 
         public ObservableCollection<VentaDto> Ventas { get; }
+        public ICollectionView VentasView { get; }
+        public IReadOnlyList<string> EstadosDisponibles { get; } = ["Todos", "Completada", "Cancelada"];
 
         [ObservableProperty]
         private bool _mostrarFiltrosVentas;
+
+        [ObservableProperty]
+        private string _textoFiltroVentas = string.Empty;
+
+        [ObservableProperty]
+        private string _estadoFiltroVentas = "Todos";
         
         [ObservableProperty]
         private int _totalVentas;
@@ -33,7 +47,28 @@ namespace PapeleriaDB.ViewModels
             _ticketPrintingService = ticketPrintingService;
             _session = session;
             Ventas = new ObservableCollection<VentaDto>();
+            VentasView = CollectionViewSource.GetDefaultView(Ventas);
+            VentasView.Filter = FiltrarVenta;
             _ = CargarHistorialVentasAsync();
+        }
+
+        partial void OnTextoFiltroVentasChanged(string value) => ActualizarFiltro();
+        partial void OnEstadoFiltroVentasChanged(string value) => ActualizarFiltro();
+
+        private bool FiltrarVenta(object item)
+        {
+            if (item is not VentaDto venta) return false;
+            var coincideEstado = EstadoFiltroVentas == "Todos" || venta.Estado.Equals(EstadoFiltroVentas, StringComparison.OrdinalIgnoreCase);
+            var coincideTexto = string.IsNullOrWhiteSpace(TextoFiltroVentas)
+                || venta.Folio.Contains(TextoFiltroVentas, StringComparison.OrdinalIgnoreCase)
+                || venta.MetodoPago.Contains(TextoFiltroVentas, StringComparison.OrdinalIgnoreCase);
+            return coincideEstado && coincideTexto;
+        }
+
+        private void ActualizarFiltro()
+        {
+            VentasView.Refresh();
+            TotalVentas = VentasView.Cast<object>().Count();
         }
 
         protected override async void OnActivated()
@@ -55,7 +90,7 @@ namespace PapeleriaDB.ViewModels
                     {
                         Ventas.Add(venta);
                     }
-                    TotalVentas = Ventas.Count;
+                    ActualizarFiltro();
                 }
             }
             catch (System.Exception ex)
@@ -130,7 +165,33 @@ namespace PapeleriaDB.ViewModels
         [RelayCommand]
         private void ExportarVentas()
         {
-            MessageBox.Show("Reporte de ventas exportado con éxito.", "Exportar CSV/PDF", MessageBoxButton.OK, MessageBoxImage.Information);
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "Guardar reporte de ventas",
+                FileName = $"ventas-{DateTime.Now:yyyyMMdd-HHmm}",
+                DefaultExt = ".csv",
+                Filter = "Archivo CSV (*.csv)|*.csv"
+            };
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                static string Csv(string valor) => $"\"{valor.Replace("\"", "\"\"")}\"";
+                var contenido = new StringBuilder("Folio,Metodo,Fecha,Estado,Subtotal,Descuento,Total\r\n");
+                foreach (var venta in VentasView.Cast<VentaDto>())
+                {
+                    contenido.AppendLine(string.Join(",",
+                        Csv(venta.Folio), Csv(venta.MetodoPago), Csv(venta.Fecha.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)),
+                        Csv(venta.Estado), venta.Subtotal.ToString(CultureInfo.InvariantCulture),
+                        venta.Descuento.ToString(CultureInfo.InvariantCulture), venta.Total.ToString(CultureInfo.InvariantCulture)));
+                }
+                File.WriteAllText(dialog.FileName, contenido.ToString(), new UTF8Encoding(true));
+                MessageBox.Show($"Reporte guardado correctamente en:\n\n{dialog.FileName}", "Exportación terminada", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"No se pudo guardar el reporte.\n{ex.Message}", "Error al exportar", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

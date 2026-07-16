@@ -26,6 +26,9 @@ namespace PapeleriaDB.ViewModels
         [ObservableProperty]
         private int _totalNotificaciones;
 
+        [ObservableProperty]
+        private string _busquedaGlobal = string.Empty;
+
         public ObservableCollection<string> Notificaciones { get; } = new();
         public bool TieneNotificaciones => TotalNotificaciones > 0;
 
@@ -98,6 +101,45 @@ namespace PapeleriaDB.ViewModels
             finally
             {
                 CargandoNotificaciones = false;
+            }
+        }
+
+        [RelayCommand]
+        private async Task BuscarGlobalAsync()
+        {
+            var texto = BusquedaGlobal.Trim();
+            if (texto.Length < 2)
+            {
+                System.Windows.MessageBox.Show("Escribe al menos dos letras para buscar.", "Búsqueda", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                var productosTask = _apiService.GetAsync<List<ProductoDto>>("api/productos");
+                var serviciosTask = _apiService.GetAsync<List<ServicioDto>>("api/servicios");
+                var ventasTask = _apiService.GetAsync<List<VentaDto>>("api/ventas");
+                await Task.WhenAll(productosTask, serviciosTask, ventasTask);
+
+                var resultados = new List<string>();
+                resultados.AddRange((await productosTask)
+                    .Where(p => p.Nombre.Contains(texto, StringComparison.OrdinalIgnoreCase) || p.CodigoInterno.Contains(texto, StringComparison.OrdinalIgnoreCase) || p.CodigoBarras.Contains(texto, StringComparison.OrdinalIgnoreCase))
+                    .Select(p => $"Producto: {p.Nombre} · stock {p.StockActual} · ${p.PrecioVenta:N2}"));
+                resultados.AddRange((await serviciosTask)
+                    .Where(s => s.Nombre.Contains(texto, StringComparison.OrdinalIgnoreCase) || s.CodigoInterno.Contains(texto, StringComparison.OrdinalIgnoreCase))
+                    .Select(s => $"Servicio: {s.Nombre} · ${s.PrecioBase:N2}"));
+                resultados.AddRange((await ventasTask)
+                    .Where(v => v.Folio.Contains(texto, StringComparison.OrdinalIgnoreCase) || v.MetodoPago.Contains(texto, StringComparison.OrdinalIgnoreCase))
+                    .Select(v => $"Venta: {v.Folio} · {v.Estado} · ${v.Total:N2}"));
+
+                var mensaje = resultados.Count == 0
+                    ? "No se encontraron coincidencias."
+                    : string.Join("\n", resultados.Take(12)) + (resultados.Count > 12 ? $"\n\nY {resultados.Count - 12} resultado(s) más." : string.Empty);
+                System.Windows.MessageBox.Show(mensaje, $"Resultados para “{texto}”", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"No se pudo realizar la búsqueda.\n{ex.Message}", "Búsqueda", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
 
